@@ -78,7 +78,7 @@ public class VistaJuego extends View {
         for (Grafico asteroide : Asteroides) {
             asteroide.dibujaGrafico(canvas);
         }
-
+s
         nave.dibujaGrafico(canvas);
 
     }
