@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <resources>
+        <string-array name="graficos">
+            <item>vectorial</item>
+            <item>bitmap</item>
+            <item>3D</item>
+        </string-array>
+        <!-- Lo de abajo son los key de los valores de arriba-->
+        <string-array name="codigo_graficos">
+            <item>vectorial</item>
+            <item>bitmap</item>
+            <item>3D</item>
+        </string-array>
+    </resources>

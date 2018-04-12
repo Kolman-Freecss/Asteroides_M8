@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class Puntuacions extends AppCompatActivity {
 
@@ -16,8 +18,9 @@ public class Puntuacions extends AppCompatActivity {
     final String[] datos = new String[]{"Provant", "El", "Adapter"};
     private LinkedList<String> puntuaciones = new LinkedList<String>();
 
-    private SharedPreferences pref;
-    private SharedPreferences.Editor editor;
+    private String currentUser = null;
+
+    //----------------------Colocar Usuario - Numero(Puntuacion) Tenerlo preparado
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,10 +29,16 @@ public class Puntuacions extends AppCompatActivity {
 
         lt1 = (ListView) findViewById(R.id.lt1);
 
+        //Recojemos variables que nos llegan del Main
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null) {
+            this.currentUser = bundle.getString("nomJugador");
+        }
+
         //Hay mas modos como MODE_APPEND
         //Cojemos la sharedPreferences que tenemos
-        pref = getSharedPreferences("Puntuaciones", Context.MODE_PRIVATE);
-        editor = pref.edit();
+        SharedPreferences pref = getSharedPreferences("Puntuaciones", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
 
         guardarPuntuacio();
         cargarPuntuaciones();
@@ -40,23 +49,37 @@ public class Puntuacions extends AppCompatActivity {
 
     }
 
-    //Provant a guardar la puntuacio
+    //Guardem la puntuacio i el usuari
     public void guardarPuntuacio(){
 
+        SharedPreferences pref = getSharedPreferences("Puntuaciones", Context.MODE_APPEND);
+        SharedPreferences.Editor editor = pref.edit();
+
         //Le ponemos un key distinto a cada dato
-        editor.putString("provantKey", datos[0]);
-        editor.commit();
-        editor.putString("provantKey1", datos[1]);
-        editor.commit();
-        editor.putString("provantKey2", datos[2]);
+        if(this.currentUser != null) {
+            editor.putString("provantKey", this.currentUser);
+        }
+
+        //De primeras podriamos guardar el nombre del usuario, y tal y como acaba la partida sobreescribimos la key
+        //y le colocamos el valor a la key   "puntuacion" + "nombre" tal y como el siguiente ejemplo:
+        //editor.putString("provantKey", "hola " + datos[0]);
+
         editor.commit();
     }
 
     public void cargarPuntuaciones(){
+
+        SharedPreferences pref = getSharedPreferences("Puntuaciones", Context.MODE_PRIVATE);
+
         //Key - Valor por defecto
-        puntuaciones.add(pref.getString("provantKey", "No esta"));
-        puntuaciones.add(pref.getString("provantKey1", "No esta1"));
-        puntuaciones.add(pref.getString("provantKey2", "No esta2"));
+        Map<String, ?> puntuacion = pref.getAll();
+        Iterator<?> it = puntuacion.entrySet().iterator();
+        while(it.hasNext()){
+            Map.Entry pair = (Map.Entry) it.next();
+            puntuaciones.add(pair.getValue().toString());
+        }
+        //Esto es para añadir de uno en uno
+        /*puntuaciones.add(pref.getString("provantKey", "No esta"));*/
 
     }
 

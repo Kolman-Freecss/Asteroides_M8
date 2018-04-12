@@ -25,14 +25,15 @@
         android:id="@+id/bt1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Jugar"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        app:layout_constraintBottom_toTopOf="@+id/bt3"
-        app:layout_constraintRight_toRightOf="@+id/bt3"
-        tools:layout_constraintLeft_creator="1"
         android:layout_marginBottom="88dp"
-        app:layout_constraintLeft_toLeftOf="@+id/bt3" />
+        android:onClick="alertEditTextFragment"
+        android:text="Jugar"
+        app:layout_constraintBottom_toTopOf="@+id/bt3"
+        app:layout_constraintLeft_toLeftOf="@+id/bt3"
+        app:layout_constraintRight_toRightOf="@+id/bt3"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1" />
 
     <Button
         android:id="@+id/bt2"
