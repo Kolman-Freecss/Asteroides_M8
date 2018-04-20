@@ -148,4 +148,8 @@ public class Grafico {
     public void setView(View view) {
         this.view = view;
     }
+
+    public static int getMaxVelocidad() {
+        return MAX_VELOCIDAD;
+    }
 }

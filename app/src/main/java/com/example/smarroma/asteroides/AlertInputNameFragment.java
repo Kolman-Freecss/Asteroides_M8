@@ -48,6 +48,7 @@ public class AlertInputNameFragment extends DialogFragment implements View.OnCli
     public void onClick(View v) {
         if(v.getId()==R.id.btConfirmar){
             //dismiss para que cuando clickes se cierre el dialogo
+            MainActivity.getMp().stop();
             this.inputNameListener.onConfirmarButtonClick(this.inputName.getText().toString());
             Intent i = new Intent(getActivity(), Juego.class );
             startActivity(i);

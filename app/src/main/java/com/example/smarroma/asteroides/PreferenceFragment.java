@@ -1,7 +1,6 @@
 package com.example.smarroma.asteroides;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -46,6 +45,7 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
             button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
+                    //Removent el fragment de preferences
                     getActivity().getFragmentManager().beginTransaction().remove(PreferenceFragment.this).commit();
                     /*Intent i = new Intent(getActivity(), MainActivity.class );
                     startActivity(i);*/

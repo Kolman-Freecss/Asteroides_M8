@@ -13,12 +13,9 @@ import java.util.Map;
 
 public class Puntuacions extends AppCompatActivity {
 
-
+    private final int MAX_VIEW_SCORES = 10;
     private ListView lt1;
-    final String[] datos = new String[]{"Provant", "El", "Adapter"};
     private LinkedList<String> puntuaciones = new LinkedList<String>();
-
-    private String currentUser = null;
 
     //----------------------Colocar Usuario - Numero(Puntuacion) Tenerlo preparado
 
@@ -26,21 +23,8 @@ public class Puntuacions extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_puntuacions);
-
         lt1 = (ListView) findViewById(R.id.lt1);
 
-        //Recojemos variables que nos llegan del Main
-        Bundle bundle = getIntent().getExtras();
-        if(bundle != null) {
-            this.currentUser = bundle.getString("nomJugador");
-        }
-
-        //Hay mas modos como MODE_APPEND
-        //Cojemos la sharedPreferences que tenemos
-        SharedPreferences pref = getSharedPreferences("Puntuaciones", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-
-        guardarPuntuacio();
         cargarPuntuaciones();
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,puntuaciones);
@@ -50,36 +34,61 @@ public class Puntuacions extends AppCompatActivity {
     }
 
     //Guardem la puntuacio i el usuari
-    public void guardarPuntuacio(){
+    public static void guardarPuntuacio(Context context, String name, int score){
 
-        SharedPreferences pref = getSharedPreferences("Puntuaciones", Context.MODE_APPEND);
+        SharedPreferences pref = Puntuacions.getSharedPreferences(context);
         SharedPreferences.Editor editor = pref.edit();
 
         //Le ponemos un key distinto a cada dato
-        if(this.currentUser != null) {
-            editor.putString("provantKey", this.currentUser);
-        }
-
-        //De primeras podriamos guardar el nombre del usuario, y tal y como acaba la partida sobreescribimos la key
-        //y le colocamos el valor a la key   "puntuacion" + "nombre" tal y como el siguiente ejemplo:
-        //editor.putString("provantKey", "hola " + datos[0]);
+        editor.putString(name + score, score + " - " + name);
 
         editor.commit();
     }
 
     public void cargarPuntuaciones(){
-
-        SharedPreferences pref = getSharedPreferences("Puntuaciones", Context.MODE_PRIVATE);
+        int i = 0;
+        SharedPreferences pref = Puntuacions.getSharedPreferences(getApplicationContext());
+        LinkedList<String> temporallyList = new LinkedList<String>();
 
         //Key - Valor por defecto
         Map<String, ?> puntuacion = pref.getAll();
         Iterator<?> it = puntuacion.entrySet().iterator();
         while(it.hasNext()){
+            i++;
             Map.Entry pair = (Map.Entry) it.next();
-            puntuaciones.add(pair.getValue().toString());
+            temporallyList.add(pair.getValue().toString());
         }
-        //Esto es para añadir de uno en uno
-        /*puntuaciones.add(pref.getString("provantKey", "No esta"));*/
+
+        /**
+         * Coloquem les 10 puntuacions mes altes
+         */
+        int puntuacionValueInArray;
+        puntuaciones.add("0 - Admin");
+        for (String value: temporallyList) {
+            boolean encontrado = false;
+            int j = 0;
+            //Ya que el value esta formado por el String "score - name" obtenemos solo el score
+            int puntuacionValue = Integer.parseInt(value.substring(0, value.indexOf("-") - 1));
+            while(j < puntuaciones.size() && !encontrado){
+                puntuacionValueInArray = Integer.parseInt(puntuaciones.get(j).substring(0, puntuaciones.get(j).indexOf("-") - 1));
+                if(puntuacionValue >= puntuacionValueInArray){
+                    puntuaciones.add(j, value);
+                    encontrado = true;
+                }
+                if(puntuaciones.size() > MAX_VIEW_SCORES){
+                    puntuaciones.remove(MAX_VIEW_SCORES);
+                }
+                j++;
+            }
+
+        }
+
+
+    }
+
+    public static SharedPreferences getSharedPreferences (Context context){
+
+        return context.getSharedPreferences("Puntuacions", context.MODE_PRIVATE);
 
     }
 

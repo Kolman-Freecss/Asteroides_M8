@@ -14,81 +14,112 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements AlertInputNameFragment.AlertInputNameFragmentListener{
 
-    private TextView tv1;
-    private MediaPlayer mp;
-    private String nombre = null;
+    private final int NUM_ASTEROIDES = 6;
 
+    private TextView tv1;
+    private static MediaPlayer mp;
+    private static String nombre = null;
     //Interfaz de la comunicación con el DialogFragment
     AlertInputNameFragment listenerDialogFragment;
+
+    //Per les animacions dels asteroides
+    private ImageView[] imageViewArray = new ImageView[NUM_ASTEROIDES];
+
+    private boolean musicOrNot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        this.getPreferenceValues();
 
         tv1 = (TextView)findViewById(R.id.tv1);
         Animation animacion
                 = AnimationUtils.loadAnimation(this,R.anim.animacion);
         tv1.startAnimation(animacion);
 
+        /**
+         * Animem les imatges d'asteroides
+         */
+        Animation animacionAsteroides
+                = AnimationUtils.loadAnimation(this,R.anim.animationasteroids);
+        for(int i = 0; i < NUM_ASTEROIDES; i++){
+
+            int res = getResources().getIdentifier("imageView" + i, "id", getPackageName());
+            imageViewArray[i] = (ImageView) findViewById(res);
+            imageViewArray[i].startAnimation(animacionAsteroides);
+
+        }
 
 
-        //Musica de fons
-        mp = MediaPlayer.create(MainActivity.this, R.raw.audio);
-        mp.start();
-        mp.setLooping(true);
 
-
-    }
-
-    //-----------Input Text Name ------------------
-
-    public void alertEditTextFragment(View view){
-
-        new AlertInputNameFragment().show(getSupportFragmentManager(), "inputNameDialog");
 
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        this.getPreferenceValues();
+        //Musica de fons
+        if(this.musicOrNot) {
+            mp = MediaPlayer.create(MainActivity.this, R.raw.audio);
+            mp.start();
+            mp.setLooping(true);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.getPreferenceValues();
+        //Musica de fons
+        if(this.musicOrNot) {
+            mp = MediaPlayer.create(MainActivity.this, R.raw.audio);
+            mp.start();
+            mp.setLooping(true);
+        }
+    }
+    //-----------Input Text Name ------------------
+
+    public void alertEditTextFragment(View view){
+
+        AlertInputNameFragment alerta = new AlertInputNameFragment();
+        alerta.show(getSupportFragmentManager(), "inputNameDialog");
+
+    }
+
+    //Al confirmar el button del dialog s'agafa el name rebut
+    @Override
     public void onConfirmarButtonClick(String name) {
-        this.nombre = name;
-        //Aqui iria el comienzo del juego
-
-
-        //Simple comprobación
-        //Toast.makeText(MainActivity.this, this.nombre, Toast.LENGTH_SHORT).show();
+        nombre = name;
     }
 
     //-----------FIN Input Text Name ------------------
 
-
-    public void clickGame(View view){
-        Intent i = new Intent(this, Juego.class );
-        startActivity(i);
-    }
-
-    //-------------------------------- Metodo que miraremos para utilizar luego para guardar usuario y puntuaciones
-    //ya que jugar tiene que llamar a la otra activity
     public void clickPuntuacions(View view){
         Intent i = new Intent(this, Puntuacions.class );
-        if(this.nombre != null) {
-            i.putExtra("nomJugador", this.nombre);
-        }
         startActivity(i);
     }
 
     public void clickSortir(View view){
-        finish();
+        finishAffinity();
     }
 
+    //////// GET & SET VALORES PREFERENCIAS /////////////
 
+    private void getPreferenceValues(){
+
+        String keyMusic = PreferenceFragment.getKeyReproducirMusicaChk();
+        this.musicOrNot = PreferenceFragment.getBoolean(this.getApplicationContext(), keyMusic);
+
+    }
 
 //-------------------------- Menu -----------------------------
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -98,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements AlertInputNameFra
 
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        //Configuración
+        //Settings
         if (id==R.id.it1) {
             getFragmentManager().beginTransaction()
                     .replace(android.R.id.content, new PreferenceFragment())
@@ -112,5 +143,18 @@ public class MainActivity extends AppCompatActivity implements AlertInputNameFra
         return super.onOptionsItemSelected(item);
     }
 
+
+    public static MediaPlayer getMp() {
+        return mp;
+    }
+
+
+    public static String getNombre() {
+        return nombre;
+    }
+
+    public static void setNombre(String nombre) {
+        MainActivity.nombre = nombre;
+    }
 
 }
