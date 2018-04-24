@@ -31,6 +31,10 @@ import java.util.Vector;
 
 public class VistaJuego extends View {
 
+    // ON SIZE CHANGED //
+    private int posX = 0;
+    private int posY = 0;
+
     //// AUDIO ////
     //Clase que maneja y reproduce audios de forma rapida
     SoundPool soundPool;
@@ -79,9 +83,6 @@ public class VistaJuego extends View {
 
         //Coloquem els Settings modificats per l'usuari
         getPreferenceValues();
-        // Obtenemos referencia al recurso asteroide1.png guardado en carpeta Res
-        /*drawableAsteroide = context.getResources().getDrawable(
-                R.drawable.asteroide1);*/
         //AL DESTRUIRSE EL ASTEROIDE SE FRAGMENTA EN VARIOS PEQUEÑOS
         drawableAsteroide[0] = context.getResources().
                 getDrawable(R.drawable.asteroide1);
@@ -159,6 +160,9 @@ public class VistaJuego extends View {
         //Colocamos la nave en el centro
         nave.setPosX(ancho / 2 - nave.getAncho() / 2);
         nave.setPosY(alto / 2 - nave.getAlto() / 2);
+
+        this.posX = ancho;
+        this.posY = alto;
     }
 
 
@@ -176,19 +180,23 @@ public class VistaJuego extends View {
         }
 
         nave.dibujaGrafico(canvas);
-        canvas.save();
         //Paint es el estilo de como vamos a querer el objeto dibujado en el canvas
         Paint paint = new Paint();
-        paint.setColor(Color.parseColor("#DEE92F"));
+        paint.setColor(Color.parseColor("#FFF933"));
         paint.setTextSize(70);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(1);
         canvas.drawPaint(paint);
 
+        canvas.drawText("Score: " + String.valueOf(this.score), 30, 100, paint);
 
+        Paint paint2 = new Paint();
+        paint2.setColor(Color.parseColor("#FFF933"));
+        paint2.setTextSize(70);
+        paint2.setStyle(Paint.Style.STROKE);
+        canvas.drawPaint(paint2);
 
-        canvas.drawText(String.valueOf(this.score), 30, 100, paint);
-        canvas.restore();
+        //Calculamos segun la pantalla proporcionada
+        canvas.drawText("Vidas: " + String.valueOf(this.vidas), this.posX - 300, this.posY - 50, paint);
 
     }
 
@@ -360,11 +368,16 @@ public class VistaJuego extends View {
     @Override
     public boolean onTouchEvent (MotionEvent event) {
         super.onTouchEvent(event);
+        drawableNave = getContext().getResources().getDrawable(
+                R.drawable.nave);
+        drawableNaveFuego = getContext().getResources().getDrawable(
+                R.drawable.nave_fuego);
         float x = event.getX();
         float y = event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 disparo=true;
+                nave.setDrawable(drawableNaveFuego);
                 break;
             case MotionEvent.ACTION_MOVE:
                 float dx = Math.abs(x - mX);
@@ -376,6 +389,7 @@ public class VistaJuego extends View {
                     aceleracionNave = Math.round((mY - y) / 25);
                     disparo = false;
                 }
+                nave.setDrawable(drawableNaveFuego);
                 break;
             case MotionEvent.ACTION_UP:
                 giroNave = 0;
@@ -383,6 +397,7 @@ public class VistaJuego extends View {
                 if (disparo){
                     ActivaMisil();
                 }
+                nave.setDrawable(drawableNave);
                 break;
         }
         mX=x; mY=y;

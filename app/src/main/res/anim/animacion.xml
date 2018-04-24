@@ -13,7 +13,6 @@
         android:pivotX="50%"
         android:pivotY="50%"
         />
-    <!-- android:repeatCount="infinite" -->
     <translate
         android:startOffset="4000"
         android:duration="2000"
@@ -23,6 +22,7 @@
         android:toYDelta="100"/>
     <alpha
         android:startOffset="4000"
+        android:repeatCount="infinite"
         android:duration="2000"
         android:fromAlpha="1"
         android:toAlpha="0"/>

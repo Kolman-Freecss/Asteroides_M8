@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements AlertInputNameFra
     //Per les animacions dels asteroides
     private ImageView[] imageViewArray = new ImageView[NUM_ASTEROIDES];
 
-    private boolean musicOrNot;
+    private static boolean musicOrNot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,24 +57,11 @@ public class MainActivity extends AppCompatActivity implements AlertInputNameFra
             imageViewArray[i].startAnimation(animacionAsteroides);
 
         }
-
-
-
-
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        this.getPreferenceValues();
-        //Musica de fons
-        if(this.musicOrNot) {
-            mp = MediaPlayer.create(MainActivity.this, R.raw.audio);
-            mp.start();
-            mp.setLooping(true);
-        }
-    }
-
+    /**
+     * Per quan tanques l'aplicació agafi la configuració desada
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -84,6 +71,11 @@ public class MainActivity extends AppCompatActivity implements AlertInputNameFra
             mp = MediaPlayer.create(MainActivity.this, R.raw.audio);
             mp.start();
             mp.setLooping(true);
+        }else{
+            if(mp != null) {
+                mp.stop();
+                mp.setLooping(false);
+            }
         }
     }
     //-----------Input Text Name ------------------
@@ -148,13 +140,15 @@ public class MainActivity extends AppCompatActivity implements AlertInputNameFra
         return mp;
     }
 
-
     public static String getNombre() {
         return nombre;
     }
 
-    public static void setNombre(String nombre) {
-        MainActivity.nombre = nombre;
+    public static void setMusicOrNot(boolean musicOrNot) {
+        MainActivity.musicOrNot = musicOrNot;
     }
 
+    public static void setMp(MediaPlayer mp) {
+        MainActivity.mp = mp;
+    }
 }

@@ -25,15 +25,11 @@ public class GameOver extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //inflater.inflate(R.layout.gameover, container, false);
-        //View view = getView();
         this.score = getArguments().getInt("score");
 
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        // + o -
         view.inflate(getContext(), R.layout.gameover, container);
-        //view.setBackgroundColor(Color.TRANSPARENT);
-//null Object Reference
+
         btBack = (Button) getActivity().findViewById(R.id.btBack);
         btScore = (Button) getActivity().findViewById(R.id.btScore);
         btTry = (Button) getActivity().findViewById(R.id.btTry);

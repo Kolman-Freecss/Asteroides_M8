@@ -32,7 +32,6 @@ public class AlertInputNameFragment extends DialogFragment implements View.OnCli
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        //Importante concepto el de inflate el xml
         View view = inflater.inflate(R.layout.my_inputname_dialog, null);
         btConfirmar = (Button) view.findViewById(R.id.btConfirmar);
         btVolver = (Button) view.findViewById(R.id.btVolver);
@@ -47,15 +46,14 @@ public class AlertInputNameFragment extends DialogFragment implements View.OnCli
     @Override
     public void onClick(View v) {
         if(v.getId()==R.id.btConfirmar){
-            //dismiss para que cuando clickes se cierre el dialogo
-            MainActivity.getMp().stop();
+            if(MainActivity.getMp() != null) {
+                MainActivity.getMp().stop();
+            }
             this.inputNameListener.onConfirmarButtonClick(this.inputName.getText().toString());
             Intent i = new Intent(getActivity(), Juego.class );
             startActivity(i);
-            //dismiss();
 
         }else if(v.getId()==R.id.btVolver){
-            //dismiss para que cuando clickes se cierre el dialogo
             dismiss();
         }
     }

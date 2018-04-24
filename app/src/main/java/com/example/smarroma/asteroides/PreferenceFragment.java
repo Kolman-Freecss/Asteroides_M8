@@ -3,6 +3,7 @@ package com.example.smarroma.asteroides;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
@@ -21,8 +22,6 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
     private static final String KEY_TIPO_GRAFICOS = "tipo_graficos";
     private static final String KEY_NUM_FRAGMENTS_CHK = "num_fragments";
 
-
-    //Al crearse li donem el color WHITE
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
@@ -47,8 +46,6 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
                 public boolean onPreferenceClick(Preference preference) {
                     //Removent el fragment de preferences
                     getActivity().getFragmentManager().beginTransaction().remove(PreferenceFragment.this).commit();
-                    /*Intent i = new Intent(getActivity(), MainActivity.class );
-                    startActivity(i);*/
                     return true;
                 }
             });
@@ -56,6 +53,24 @@ public class PreferenceFragment extends android.preference.PreferenceFragment {
 
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        String keyMusic = PreferenceFragment.getKeyReproducirMusicaChk();
+        if(PreferenceFragment.getBoolean(getActivity(), keyMusic)){
+            MainActivity.setMp(MediaPlayer.create(getActivity(), R.raw.audio));
+            MainActivity.setMusicOrNot(true);
+            MainActivity.getMp().start();
+            MainActivity.getMp().setLooping(true);
+        }else{
+            if(MainActivity.getMp() != null) {
+                MainActivity.setMusicOrNot(false);
+                MainActivity.getMp().stop();
+                MainActivity.getMp().setLooping(false);
+            }
+        }
+
+    }
 
     /**
      * MODIFICAR PREFERENCIAS

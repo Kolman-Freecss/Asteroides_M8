@@ -2,10 +2,16 @@ package com.example.smarroma.asteroides;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.TypedValue;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -27,7 +33,26 @@ public class Puntuacions extends AppCompatActivity {
 
         cargarPuntuaciones();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,puntuaciones);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, puntuaciones){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent){
+                // Cast the list view each item as text view
+                TextView item = (TextView) super.getView(position,convertView,parent);
+
+                // Set the list view item's text color
+                item.setTextColor(Color.parseColor("#FFFFFF"));
+
+                // Set the item text style to bold
+                item.setTypeface(item.getTypeface(), Typeface.BOLD);
+
+                // Change the item text size
+                item.setTextSize(TypedValue.COMPLEX_UNIT_DIP,18);
+
+                // return the view
+                return item;
+            }
+        };
+
         lt1.setAdapter(adapter);
 
 
