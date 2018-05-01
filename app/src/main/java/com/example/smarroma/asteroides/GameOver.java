@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 /**
  * Created by smarroma on 17/04/2018.
@@ -17,6 +18,7 @@ import android.widget.Button;
 
 public class GameOver extends Fragment {
 
+    private TextView tvTitle;
     private Button btBack;
     private Button btScore;
     private Button btTry;
@@ -33,6 +35,30 @@ public class GameOver extends Fragment {
         btBack = (Button) getActivity().findViewById(R.id.btBack);
         btScore = (Button) getActivity().findViewById(R.id.btScore);
         btTry = (Button) getActivity().findViewById(R.id.btTry);
+        tvTitle = (TextView) getActivity().findViewById(R.id.tvTitle);
+
+        if(getArguments().getInt("win") == 1){
+
+            tvTitle.setBackground(getActivity().getDrawable(R.drawable.you_win));
+            btTry.setBackground(getActivity().getDrawable(R.drawable.score_inici));
+            btTry.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clickScore();
+                }
+            });
+
+            btScore.setVisibility(View.INVISIBLE);
+            btBack.setBackground(getActivity().getDrawable(R.drawable.back_input_name));
+
+        }else{
+            btTry.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clickTry();
+                }
+            });
+        }
 
         this.name = MainActivity.getNombre();
 
@@ -47,13 +73,6 @@ public class GameOver extends Fragment {
             @Override
             public void onClick(View v) {
                 clickScore();
-            }
-        });
-
-        btTry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clickTry();
             }
         });
 

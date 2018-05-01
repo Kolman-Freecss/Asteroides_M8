@@ -7,18 +7,18 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tvTitle"
         android:layout_width="283dp"
         android:layout_height="76dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="62dp"
         android:background="@drawable/game_over"
         app:layout_constraintBottom_toTopOf="@+id/btScore"
+        app:layout_constraintHorizontal_bias="0.506"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         tools:layout_constraintBottom_creator="1"
         tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1"
-        app:layout_constraintHorizontal_bias="0.503" />
+        tools:layout_constraintRight_creator="1" />
 
     <Button
         android:id="@+id/btTry"

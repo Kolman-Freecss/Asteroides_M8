@@ -127,9 +127,11 @@ public class VistaJuego extends View {
     //////// GET & SET VALORES PREFERENCIAS /////////////
 
     private void getPreferenceValues(){
-
+        int fragmentsUserChoice = 5;
         String keyFragments = PreferenceFragment.getKeyNumFragmentsChk();
-        int fragmentsUserChoice = Integer.valueOf(PreferenceFragment.getString(getContext(), keyFragments));
+        if(!"".equals(PreferenceFragment.getString(getContext(), keyFragments))) {
+            fragmentsUserChoice = Integer.valueOf(PreferenceFragment.getString(getContext(), keyFragments));
+        }
         this.numFragmentos = fragmentsUserChoice;
 
     }
@@ -240,6 +242,11 @@ public class VistaJuego extends View {
          */
         for (int i = 0; i < Asteroides.size(); i++) {
             //Comprueba todos los asteroides que hay en la pantalla (Asteroides es un vector)
+            if(this.currentColision != -1) {
+                if (!nave.verificaColision(Asteroides.elementAt(this.currentColision))) {
+                    this.currentColision = -1;
+                }
+            }
             if (nave.verificaColision(Asteroides.elementAt(i))) {
                 //Guardamos el asteroide contra el que ha chocado actualmente y comprobamos si la proxima vuelta
                 //sigue en el radio de este asteroide
@@ -248,10 +255,6 @@ public class VistaJuego extends View {
                     this.vidas--;
                 }
                 break;
-            }else if(this.currentColision != -1) {
-                if (!nave.verificaColision(Asteroides.elementAt(this.currentColision))) {
-                    this.currentColision = -1;
-                }
             }
         }
 
@@ -332,17 +335,22 @@ public class VistaJuego extends View {
     class ThreadJuego extends Thread{
         @Override
         public void run() {
-            while(vidas > 0){
+            while(vidas > 0 && Asteroides.size() > 0){
                 actualizaFisica();
             }
-            gameOver();
+            if (vidas <= 0) {
+                gameOver(0);
+            }else if(Asteroides.size() <= 0){
+                gameOver(1);
+            }
+
         }
     }
 
     /**
      * El joc finalitza
      */
-    private void gameOver(){
+    private void gameOver(int winOrNot){
 
         FragmentManager fragmentManager = ((FragmentActivity) getContext()).getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -350,6 +358,7 @@ public class VistaJuego extends View {
         //Le pasamos el score al Game Over
         Bundle bundle = new Bundle();
         bundle.putInt("score", this.score);
+        bundle.putInt("win", winOrNot);
 
         GameOver gameOver = new GameOver();
         gameOver.setArguments(bundle);

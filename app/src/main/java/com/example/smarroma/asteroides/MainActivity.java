@@ -18,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+
 public class MainActivity extends AppCompatActivity implements AlertInputNameFragment.AlertInputNameFragmentListener{
 
     private final int NUM_ASTEROIDES = 6;
